@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Noxxys</Authors>
+    <Copyright>Copyright 2019 Noxxys</Copyright>
+    <PackageProjectUrl>https://github.com/Noxxys/RageLauncher</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Noxxys/RageLauncher.git</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="README.md">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="README.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
