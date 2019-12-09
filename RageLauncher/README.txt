@@ -8,7 +8,7 @@ This tool moves your mod files to your game folder, launches Rage Plugin Hook, a
 
 ## Installation
 
-Download the latest release from ... and extract the zip archive to a folder of your choice. Do not launch any file from the zip archive.
+Download the latest release from https://github.com/Noxxys/RageLauncher/releases/ and extract the zip archive to a folder of your choice. Do not launch any file from the zip archive.
 
 ## Configuration
 
