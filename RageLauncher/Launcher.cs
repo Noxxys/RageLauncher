@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace RageLauncher
 {
@@ -15,56 +17,86 @@ namespace RageLauncher
         public Launcher()
         {
             config = new ConfigurationBuilder()
-                .AddJsonFile("config.json", true, true)
+                .AddIniFile("config.ini", false, true)
                 .Build()
                 .Get<Config>();
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File("RageLauncher.log")
+                .CreateLogger();
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Prevent the command window from closing")]
         public async Task Launch()
         {
             var sourcePath = config.SourcePath;
             var targetPath = config.TargetPath;
 
-            Console.WriteLine("Source directory: " + sourcePath);
-            Console.WriteLine("Target directory: " + targetPath);
-            Console.WriteLine("Moving files...");
+            Log.Information("Source directory: {sourcePath}", sourcePath);
+            Log.Information("Target directory: {targetPath}", targetPath);
+            Log.Information("Moving files...");
 
-            var filesToMove = Directory.GetFiles(sourcePath).Select(p => Path.GetFileName(p));
-            var directoriesToMove = Directory.GetDirectories(sourcePath).Select(p => Path.GetFileName(p));
-            Move(sourcePath, targetPath, filesToMove, directoriesToMove);
+            try
+            {
+                var filesToMove = Directory.GetFiles(sourcePath).Select(p => Path.GetFileName(p));
+                var directoriesToMove = Directory.GetDirectories(sourcePath).Select(p => Path.GetFileName(p));
+                Move(sourcePath, targetPath, filesToMove, directoriesToMove);
 
-            StartHookAndWaitForExit(targetPath);
-            Console.WriteLine($"Waiting for {config.GameProcessName} to exit...");
-            await WaitForGameToExit().ConfigureAwait(false);
+                StartHookAndWaitForExit(targetPath);
+                Log.Information("Waiting for {gameProcessName} to exit...", config.GameProcessName);
+                await WaitForGameToExit().ConfigureAwait(false);
 
-            Console.WriteLine("Moving files back...");
-            Move(targetPath, sourcePath, filesToMove, directoriesToMove);
+                Log.Information("Moving files back...");
+                Move(targetPath, sourcePath, filesToMove, directoriesToMove);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("An error occurred. Please send the RageLauncher.log file to noxxys@gmail.com so I can help you with this problem. {ex}", ex);
+            }
 
-            Console.WriteLine("All done, press Enter to exit.");
+            Log.Information("Press Enter to exit.");
             Console.ReadLine();
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We don't want to interrupt the move because of a failure on one file")]
         private static void Move(string sourceDirectory, string targetDirectory, IEnumerable<string> fileNames, IEnumerable<string> directoryNames)
         {
             foreach (var fileName in fileNames)
             {
                 var sourceFileName = Path.Combine(sourceDirectory, fileName);
                 var targetFileName = Path.Combine(targetDirectory, fileName);
-                File.Move(sourceFileName, targetFileName, overwrite: true);
+
+                try
+                {
+                    File.Move(sourceFileName, targetFileName, overwrite: true);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Couldn't move file {source} to {destination} - {exception}", sourceFileName, targetFileName, ex);
+                }
             }
 
             foreach (var directoryName in directoryNames)
             {
                 var sourceDirectoryName = Path.Combine(sourceDirectory, directoryName);
                 var targetDirectoryName = Path.Combine(targetDirectory, directoryName);
-                Directory.Move(sourceDirectoryName, targetDirectoryName);
+
+                try
+                {
+                    Directory.Move(sourceDirectoryName, targetDirectoryName);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Couldn't move directory {source} to {destination} - {exception}", sourceDirectoryName, targetDirectoryName, ex);
+                }
             }
         }
 
         private void StartHookAndWaitForExit(string targetPath)
         {
             var ragePluginHookPath = Path.Combine(targetPath, config.RagePluginHookFileName);
-            Console.WriteLine($"Starting " + ragePluginHookPath);
+            Log.Information("Starting {ragePluginHookPath}", ragePluginHookPath);
 
             using var process = new Process();
             process.StartInfo.FileName = ragePluginHookPath;
@@ -72,7 +104,7 @@ namespace RageLauncher
             process.Start();
             process.WaitForExit();
 
-            Console.WriteLine($"The {config.RagePluginHookFileName} process has exited");
+            Log.Information("The {ragePluginHookFileName} process has exited", config.RagePluginHookFileName);
         }
 
         private async Task WaitForGameToExit()
