@@ -26,7 +26,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="3.1.0" />
-    <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.1" />
+    <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.2" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
   </ItemGroup>
