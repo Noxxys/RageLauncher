@@ -1,0 +1,1 @@
+ncbeauty --loglevel=Info "C:\Dev\Repos\RDR2\RageLauncher\RageLauncher\bin\Release\netcoreapp3.1\publish" bin
