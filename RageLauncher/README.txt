@@ -18,4 +18,6 @@ Double-click RageLauncher.exe and wait for the game to launch. You can make a sh
 
 ## Getting help
 
+Since this program is not signed with a valid certificate (which costs money to purchase), it's possible that Windows will block it and prevent it from running. In this case, you will see a screen mentioning that Windows SmartScreen protected your PC. You can click on the "More info" link to allow the execution. This program is virus-free and has been checked by the security system of the https://www.mod-rdr.com/ website. When I have more time, I will create an installer for it and find out how to get a validate certificate.
+
 If you encounter an error or this tool doesn't work as intended, please post a detailed description of your problem along with the RageLauncher.log file on the [website](https://www.mod-rdr.com/files/file/29-ragelauncher/), and I'll do my best to help you.

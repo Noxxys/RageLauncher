@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/Noxxys/RageLauncher.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <ApplicationIcon>Rockstar.ico</ApplicationIcon>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <BeautyLibsDir>bin</BeautyLibsDir>
     <BeautyLogLevel>Info</BeautyLogLevel>
   </PropertyGroup>
